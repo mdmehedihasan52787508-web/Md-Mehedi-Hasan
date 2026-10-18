@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AirLink — Personal Device Manager</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="brand-section">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                        <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1 class="brand-title">AirLink</h1>
+                    <p class="brand-subtitle" data-i18n="subtitle">Personal Device Manager</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="server-status-pill" id="serverPill" onclick="toggleServer()">
+                    <span class="status-dot online" id="serverDot"></span>
+                    <span id="serverStatusText">192.168.1.102:8888</span>
+                </div>
+                <button class="lang-toggle-btn" id="langBtn" onclick="toggleLanguage()" title="Switch Language">
+                    <span id="langLabel">বাংলা</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs" id="navTabs">
+            <button class="nav-tab active" data-tab="overview" onclick="switchTab('overview')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span data-i18n="tab_overview">Overview</span>
+            </button>
+            <button class="nav-tab" data-tab="pairing" onclick="switchTab('pairing')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                <span data-i18n="tab_pairing">Pairing</span>
+            </button>
+            <button class="nav-tab" data-tab="files" onclick="switchTab('files')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                <span data-i18n="tab_files">Files</span>
+            </button>
+            <button class="nav-tab" data-tab="mirror" onclick="switchTab('mirror')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                <span data-i18n="tab_screen">Screen</span>
+            </button>
+            <button class="nav-tab" data-tab="notifications" onclick="switchTab('notifications')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span data-i18n="tab_notif">Alerts</span>
+            </button>
+            <button class="nav-tab" data-tab="settings" onclick="switchTab('settings')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span data-i18n="tab_settings">Settings</span>
+            </button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="content-container">
+
+            <!-- TAB 1: OVERVIEW -->
+            <section class="tab-pane active" id="pane-overview">
+                
+                <!-- Quick Telemetry Cards Grid -->
+                <div class="telemetry-grid">
+                    
+                    <!-- Battery Card -->
+                    <div class="card telemetry-card">
+                        <div class="card-header">
+                            <span class="card-icon battery-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="18" height="12" rx="2" ry="2"></rect><line x1="23" y1="11" x2="23" y2="13"></line></svg>
+                            </span>
+                            <span class="card-title" data-i18n="card_battery">Battery</span>
+                        </div>
+                        <div class="card-body gauge-body">
+                            <div class="gauge-container">
+                                <svg class="gauge-ring" viewBox="0 0 100 100">
+                                    <circle class="gauge-bg" cx="50" cy="50" r="42"></circle>
+                                    <circle class="gauge-fill" id="batteryRing" cx="50" cy="50" r="42"></circle>
+                                </svg>
+                                <div class="gauge-center">
+                                    <span class="gauge-val" id="batteryLevel">84%</span>
+                                </div>
+                            </div>
+                            <div class="gauge-details">
+                                <div class="badge badge-success" id="batteryStatus" data-i18n="status_charging">Charging (AC)</div>
+                                <span class="subtext" id="batteryHealth">Health: Good (38°C)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Storage Card -->
+                    <div class="card telemetry-card">
+                        <div class="card-header">
+                            <span class="card-icon storage-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                            </span>
+                            <span class="card-title" data-i18n="card_storage">Storage</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="storage-stats">
+                                <div class="stat-highlight">
+                                    <span class="stat-number" id="storageFree">48.2</span>
+                                    <span class="stat-unit">GB Free</span>
+                                </div>
+                                <span class="subtext" id="storageTotal">of 128.0 GB total</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="storageBar" style="width: 62%;"></div>
+                            </div>
+                            <span class="subtext" data-i18n="storage_internal">Internal Flash Storage</span>
+                        </div>
+                    </div>
+
+                    <!-- Wi-Fi Network Card -->
+                    <div class="card telemetry-card">
+                        <div class="card-header">
+                            <span class="card-icon wifi-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                            </span>
+                            <span class="card-title" data-i18n="card_network">Local Network</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="network-info">
+                                <div class="network-ssid" id="wifiSSID">Home_Wi-Fi_5G</div>
+                                <div class="ip-row">
+                                    <code class="ip-text" id="deviceIP">http://192.168.1.102:8888</code>
+                                    <button class="icon-btn-copy" onclick="copyDeviceAddress()" title="Copy Link">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="badge badge-info" data-i18n="badge_lan_active">LAN Server Active</div>
+                        </div>
+                    </div>
+
+                    <!-- Device Spec Card -->
+                    <div class="card telemetry-card">
+                        <div class="card-header">
+                            <span class="card-icon spec-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                            </span>
+                            <span class="card-title" data-i18n="card_device_info">Device Info</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="spec-row">
+                                <span class="spec-label" data-i18n="label_model">Model</span>
+                                <span class="spec-val" id="deviceModel">Android Device</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label" data-i18n="label_os">Android OS</span>
+                                <span class="spec-val" id="deviceOS">Android 14 (API 34)</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label" data-i18n="label_app_ver">AirLink Ver</span>
+                                <span class="spec-val">1.0.0 (AIDE Build)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Quick Action Hub -->
+                <div class="quick-actions-bar">
+                    <button class="action-btn-primary" onclick="switchTab('pairing')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                        <span data-i18n="btn_pair_device">Pair Device</span>
+                    </button>
+                    <button class="action-btn-secondary" onclick="triggerFilePicker()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <span data-i18n="btn_send_files">Send Files</span>
+                    </button>
+                    <button class="action-btn-secondary" onclick="switchTab('mirror')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                        <span data-i18n="btn_screen_mirror">Screen Cast</span>
+                    </button>
+                </div>
+
+                <!-- Connected Devices Panel -->
+                <div class="card section-card">
+                    <div class="card-header space-between">
+                        <div class="header-left">
+                            <span class="card-title" data-i18n="title_connected_devices">Connected Devices</span>
+                            <span class="device-count-badge" id="deviceCount">0 Connected</span>
+                        </div>
+                        <button class="btn-sm btn-ghost" onclick="refreshDeviceList()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            <span data-i18n="btn_refresh">Refresh</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="device-list" id="pairedDevicesContainer">
+                            <!-- Empty State shown when no device paired -->
+                            <div class="empty-state" id="noDeviceState">
+                                <div class="empty-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                </div>
+                                <h4 class="empty-title" data-i18n="empty_no_device_title">No Devices Paired Yet</h4>
+                                <p class="empty-desc" data-i18n="empty_no_device_desc">Generate a secure pairing code or scan the QR code from another Android phone or laptop browser on the same Wi-Fi.</p>
+                                <button class="btn-sm btn-primary" onclick="switchTab('pairing')" data-i18n="btn_open_pairing">Open Pairing Center</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Feed -->
+                <div class="card section-card">
+                    <div class="card-header space-between">
+                        <span class="card-title" data-i18n="title_recent_activity">Transfer & Event Log</span>
+                        <button class="btn-xs btn-ghost" onclick="clearActivityLog()" data-i18n="btn_clear">Clear</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-feed" id="activityFeed">
+                            <div class="activity-item">
+                                <span class="activity-dot dot-cyan"></span>
+                                <div class="activity-details">
+                                    <span class="activity-text" data-i18n="event_server_boot">AirLink local server listening on port 8888</span>
+                                    <span class="activity-time">Just now</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <span class="activity-dot dot-green"></span>
+                                <div class="activity-details">
+                                    <span class="activity-text" data-i18n="event_system_ready">Device telemetry synchronized successfully</span>
+                                    <span class="activity-time">1m ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- TAB 2: DEVICE PAIRING -->
+            <section class="tab-pane" id="pane-pairing">
+                <div class="pairing-container">
+                    
+                    <!-- Pairing Instructions Card -->
+                    <div class="card pairing-card">
+                        <div class="card-header">
+                            <span class="card-icon pair-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            </span>
+                            <div>
+                                <h3 class="card-title" data-i18n="pairing_card_title">Local Wi-Fi Pairing</h3>
+                                <p class="card-subtitle" data-i18n="pairing_card_subtitle">Mutual authentication ensures only approved devices can connect</p>
+                            </div>
+                        </div>
+
+                        <div class="card-body pairing-body">
+                            
+                            <!-- 6-digit Code Display -->
+                            <div class="pin-display-wrapper">
+                                <span class="subtext" data-i18n="pairing_pin_label">Your 6-Digit Temporary Pairing PIN:</span>
+                                <div class="pin-digits" id="pinDisplay">
+                                    <span>8</span><span>4</span><span>1</span>
+                                    <span class="pin-dash">-</span>
+                                    <span>2</span><span>9</span><span>0</span>
+                                </div>
+                                <div class="pin-timer-row">
+                                    <span class="subtext" data-i18n="pin_expires">Expires in: <strong id="pinTimer">04:48</strong></span>
+                                    <button class="btn-xs btn-outline" onclick="generateNewPin()" data-i18n="btn_new_pin">New Code</button>
+                                </div>
+                            </div>
+
+                            <!-- QR Code Canvas for Fast Scanning -->
+                            <div class="qr-wrapper">
+                                <div class="qr-canvas-box">
+                                    <canvas id="qrCanvas" width="160" height="160"></canvas>
+                                </div>
+                                <p class="qr-hint" data-i18n="qr_hint">Scan with another phone or open the link below on your PC/Mac:</p>
+                                <div class="web-access-pill">
+                                    <code id="webUrlDisplay">http://192.168.1.102:8888</code>
+                                    <button class="btn-xs btn-primary" onclick="copyDeviceAddress()" data-i18n="btn_copy">Copy</button>
+                                </div>
+                            </div>
+
+                            <!-- Connect to Another Phone Box -->
+                            <div class="connect-other-box">
+                                <h4 class="box-title" data-i18n="title_connect_remote">Connect to Another Device</h4>
+                                <p class="subtext" data-i18n="desc_connect_remote">Enter the target phone's IP and 6-digit code to pair:</p>
+                                <div class="input-form-row">
+                                    <input type="text" class="input-field" id="remoteIpInput" placeholder="e.g. 192.168.1.150" value="192.168.1.">
+                                    <input type="text" class="input-field pin-input" id="remotePinInput" placeholder="6-digit PIN" maxlength="6">
+                                    <button class="btn-primary" onclick="pairWithRemoteDevice()" data-i18n="btn_send_pair_request">Pair Device</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Security & Architecture Information -->
+                    <div class="card info-card">
+                        <div class="card-header">
+                            <span class="card-icon security-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            </span>
+                            <span class="card-title" data-i18n="title_security_arch">Security & Encryption Details</span>
+                        </div>
+                        <div class="card-body text-sm">
+                            <p data-i18n="sec_desc_1"><strong>Zero External Cloud Dependency:</strong> Pairing happens directly over your local Wi-Fi router. No telemetry, files, or tokens are ever uploaded to third-party servers.</p>
+                            <p data-i18n="sec_desc_2"><strong>Mutual Approval:</strong> Even if a device enters your PIN, a pop-up confirmation on this screen requires your explicit tap before any session token is granted.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- TAB 3: FILE TRANSFER & MANAGER -->
+            <section class="tab-pane" id="pane-files">
+                
+                <!-- Send Files Card -->
+                <div class="card section-card">
+                    <div class="card-header space-between">
+                        <div>
+                            <h3 class="card-title" data-i18n="title_file_transfer">File Transfer Hub</h3>
+                            <p class="card-subtitle" data-i18n="subtitle_file_transfer">Send and receive photos, videos, APKs, and documents safely</p>
+                        </div>
+                        <button class="btn-primary" onclick="triggerFilePicker()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            <span data-i18n="btn_choose_files">Select Files (SAF)</span>
+                        </button>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Dropzone for Web / Emulator -->
+                        <div class="dropzone" id="dropZone" onclick="triggerFilePicker()">
+                            <input type="file" id="hiddenFileInput" style="display:none;" multiple onchange="handleHtmlFileSelect(this.files)">
+                            <div class="dropzone-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="12" y2="12"></line><line x1="15" y1="15" x2="12" y2="12"></line></svg>
+                            </div>
+                            <h4 class="dropzone-title" data-i18n="dropzone_title">Tap to pick or drop files here</h4>
+                            <p class="dropzone-desc" data-i18n="dropzone_desc">Uses Android Storage Access Framework (SAF). Supports multiple files and automatic SHA-256 integrity checks.</p>
+                        </div>
+
+                        <!-- Active Transfer Queue -->
+                        <div class="transfer-queue-section">
+                            <h4 class="section-subheading" data-i18n="title_active_transfers">Active Transfers</h4>
+                            <div class="transfer-list" id="transferQueue">
+                                <!-- Default item for visual demonstration -->
+                                <div class="transfer-item">
+                                    <div class="file-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                    </div>
+                                    <div class="transfer-info">
+                                        <div class="transfer-header-row">
+                                            <span class="file-name">AirLink_AIDE_Project.zip</span>
+                                            <span class="transfer-speed">4.8 MB/s</span>
+                                        </div>
+                                        <div class="progress-bar-bg">
+                                            <div class="progress-bar-fill" style="width: 100%;"></div>
+                                        </div>
+                                        <div class="transfer-meta-row">
+                                            <span class="file-size">14.2 MB of 14.2 MB</span>
+                                            <span class="badge badge-success" data-i18n="badge_sha256_verified">SHA-256 Verified ✓</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Received Files Manager -->
+                <div class="card section-card">
+                    <div class="card-header space-between">
+                        <span class="card-title" data-i18n="title_received_files">Received Files (Downloads)</span>
+                        <button class="btn-xs btn-outline" onclick="loadReceivedFiles()" data-i18n="btn_refresh_files">Refresh</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="files-table-wrapper">
+                            <table class="files-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="th_name">Name</th>
+                                        <th data-i18n="th_size">Size</th>
+                                        <th data-i18n="th_date">Date</th>
+                                        <th data-i18n="th_action">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="filesTableBody">
+                                    <tr>
+                                        <td>
+                                            <div class="file-name-cell">
+                                                <span class="file-type-pill pill-doc">DOC</span>
+                                                <span>AirLink_Manual_AIDE.pdf</span>
+                                            </div>
+                                        </td>
+                                        <td>2.4 MB</td>
+                                        <td>Today</td>
+                                        <td>
+                                            <button class="btn-xs btn-primary" onclick="showToast('File stored in Downloads folder')" data-i18n="btn_open">Open</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- TAB 4: SCREEN SHARING -->
+            <section class="tab-pane" id="pane-mirror">
+                <div class="mirror-container">
+                    
+                    <div class="card section-card">
+                        <div class="card-header space-between">
+                            <div>
+                                <h3 class="card-title" data-i18n="title_screen_share">Screen Mirroring</h3>
+                                <p class="card-subtitle" data-i18n="subtitle_screen_share">Stream screen securely via MediaProjection API</p>
+                            </div>
+                            <div class="badge badge-warning" id="screenBadge" data-i18n="badge_stream_standby">Standby</div>
+                        </div>
+
+                        <div class="card-body">
+                            <!-- Screen Viewport Box -->
+                            <div class="screen-viewport" id="screenViewport">
+                                <div class="screen-stream-placeholder" id="screenPlaceholder">
+                                    <div class="stream-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                                    </div>
+                                    <h4 data-i18n="screen_ready_title">Screen Mirroring Ready</h4>
+                                    <p class="subtext" data-i18n="screen_ready_desc">Tap Start below to begin high-speed, local Wi-Fi display streaming. A persistent notification will be displayed while streaming.</p>
+                                </div>
+                                <canvas id="streamCanvas" width="360" height="640" style="display:none;"></canvas>
+                            </div>
+
+                            <!-- Screen Stream Stats -->
+                            <div class="stream-stats-bar">
+                                <div class="stat-pill"><span data-i18n="stat_fps">FPS:</span> <strong id="streamFps">0</strong></div>
+                                <div class="stat-pill"><span data-i18n="stat_res">Resolution:</span> <strong>1080x2400 (Native)</strong></div>
+                                <div class="stat-pill"><span data-i18n="stat_latency">Latency:</span> <strong>~18ms (LAN)</strong></div>
+                            </div>
+
+                            <!-- Screen Control Buttons -->
+                            <div class="screen-btn-row">
+                                <button class="btn-primary" id="btnStartScreen" onclick="toggleScreenShare()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                    <span id="screenBtnLabel" data-i18n="btn_start_screen">Start Screen Sharing</span>
+                                </button>
+                                <button class="btn-outline" onclick="copyScreenStreamUrl()" data-i18n="btn_copy_stream_url">Copy Web Viewer Link</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Android Limitation & Remote Control Advisory -->
+                    <div class="card info-card">
+                        <div class="card-header">
+                            <span class="card-icon info-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                            </span>
+                            <span class="card-title" data-i18n="title_control_notice">Remote Touch & Android Security Architecture</span>
+                        </div>
+                        <div class="card-body text-sm">
+                            <p data-i18n="control_notice_1"><strong>Standard Android Security Sandboxing:</strong> In accordance with Google Play and Android OS security standards, third-party apps cannot inject simulated touch taps into other apps without an explicitly enabled <code>AccessibilityService</code>.</p>
+                            <p data-i18n="control_notice_2"><strong>No Root or Malicious Bypasses:</strong> AirLink respects user security. Remote touch simulation requires enabling the user-consented AirLink Accessibility helper in Android Settings.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- TAB 5: NOTIFICATIONS -->
+            <section class="tab-pane" id="pane-notifications">
+                <div class="card section-card">
+                    <div class="card-header space-between">
+                        <div>
+                            <h3 class="card-title" data-i18n="title_notifications">Notification Mirroring</h3>
+                            <p class="card-subtitle" data-i18n="subtitle_notifications">Sync status bar alerts to your connected PC or second device</p>
+                        </div>
+                        <div class="badge badge-success" id="notifStatusBadge" data-i18n="badge_notif_active">Service Active</div>
+                    </div>
+
+                    <div class="card-body">
+                        
+                        <div class="notif-control-banner">
+                            <div class="banner-text">
+                                <h4 data-i18n="notif_permission_title">Notification Access Required</h4>
+                                <p class="subtext" data-i18n="notif_permission_desc">Android requires granting permission in Settings > Notification Access so AirLink can capture notifications.</p>
+                            </div>
+                            <button class="btn-sm btn-primary" onclick="openNotificationSettings()" data-i18n="btn_open_settings">Open Settings</button>
+                        </div>
+
+                        <!-- Notification Feed -->
+                        <div class="notif-feed-header">
+                            <span class="feed-title" data-i18n="title_live_alerts">Live Captured Alerts</span>
+                            <button class="btn-xs btn-ghost" onclick="clearNotifications()" data-i18n="btn_clear_all">Clear All</button>
+                        </div>
+
+                        <div class="notif-list" id="notifList">
+                            <div class="notif-card">
+                                <div class="notif-icon-box">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                </div>
+                                <div class="notif-content">
+                                    <div class="notif-top">
+                                        <span class="notif-app">AirLink Companion</span>
+                                        <span class="notif-time">2m ago</span>
+                                    </div>
+                                    <h5 class="notif-subject">Server Running on Port 8888</h5>
+                                    <p class="notif-body">Your AirLink local Wi-Fi management server is actively listening for paired connections.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: SETTINGS & AIDE GUIDE -->
+            <section class="tab-pane" id="pane-settings">
+                
+                <!-- General Settings -->
+                <div class="card section-card">
+                    <div class="card-header">
+                        <span class="card-icon settings-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        </span>
+                        <span class="card-title" data-i18n="title_settings">AirLink Preferences</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-name" data-i18n="set_server_port">Local HTTP Port</span>
+                                <span class="setting-desc" data-i18n="desc_server_port">Port for device pairing and browser file access</span>
+                            </div>
+                            <input type="number" class="input-field port-input" id="serverPortInput" value="8888" min="1024" max="65535">
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-name" data-i18n="set_require_pin">Require Pairing PIN for Web Access</span>
+                                <span class="setting-desc" data-i18n="desc_require_pin">Prevents unauthorized LAN users from viewing device</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="requirePinCheck" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <span class="setting-name" data-i18n="set_language">Display Language</span>
+                                <span class="setting-desc" data-i18n="desc_language">English or Bengali (বাংলা)</span>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn-xs btn-outline active" id="btnLangEn" onclick="setLanguage('en')">English</button>
+                                <button class="btn-xs btn-outline" id="btnLangBn" onclick="setLanguage('bn')">বাংলা</button>
+                            </div>
+                        </div>
+
+                        <div class="danger-zone">
+                            <h4 class="danger-title" data-i18n="title_security_actions">Security Actions</h4>
+                            <div class="danger-btn-row">
+                                <button class="btn-danger" onclick="revokeAllDevices()" data-i18n="btn_revoke_all">Revoke All Paired Devices</button>
+                                <button class="btn-outline" onclick="clearTransferHistory()" data-i18n="btn_clear_history">Clear Transfer History</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AIDE Setup & Architecture Guide -->
+                <div class="card info-card">
+                    <div class="card-header">
+                        <span class="card-icon book-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        </span>
+                        <span class="card-title" data-i18n="title_aide_guide">AIDE Android IDE Deployment Guide</span>
+                    </div>
+                    <div class="card-body text-sm">
+                        <p data-i18n="aide_guide_1"><strong>How to build in AIDE on an Android Phone:</strong></p>
+                        <ol class="aide-step-list">
+                            <li>Create a new <strong>Java & Android</strong> project in AIDE named <code>AirLink</code>.</li>
+                            <li>Place <code>index.html</code>, <code>css/style.css</code>, and <code>js/app.js</code> in <code>app/src/main/assets/</code>.</li>
+                            <li>Add the Java files (<code>MainActivity.java</code>, <code>DevicePairing.java</code>, <code>FileTransferManager.java</code>, <code>ScreenSharingService.java</code>, <code>NotificationListener.java</code>, <code>WebServerManager.java</code>) to <code>app/src/main/java/com/example/</code>.</li>
+                            <li>Ensure <code>AndroidManifest.xml</code> contains the required permissions and service declarations.</li>
+                            <li>Tap <strong>Run</strong> in AIDE. AIDE compiles with its native AAPT2 and DEX toolchain with zero third-party dependencies!</li>
+                        </ol>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- Approval Dialog Modal -->
+        <div class="modal-overlay" id="approvalModal">
+            <div class="modal-box">
+                <div class="modal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <h3 class="modal-title" data-i18n="modal_pair_request_title">Pairing Request Received</h3>
+                <p class="modal-desc" id="modalRequestDesc">A remote device "Redmi Note 12" (192.168.1.55) is requesting to pair with your AirLink manager.</p>
+                <div class="modal-btn-row">
+                    <button class="btn-outline" onclick="respondPairing(false)" data-i18n="btn_deny">Deny</button>
+                    <button class="btn-primary" onclick="respondPairing(true)" data-i18n="btn_approve">Approve & Connect</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification Container -->
+        <div class="toast" id="toast"></div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+</body>
+</html>
